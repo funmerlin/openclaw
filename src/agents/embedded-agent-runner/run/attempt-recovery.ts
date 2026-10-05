@@ -444,7 +444,8 @@ export async function recoverEmbeddedRunAttempt(input: {
   ) {
     runInput.laneController.throwIfAborted();
     if (attempt.codexAppServerFailure?.kind === "turn_start_overloaded") {
-      return retry();
+      recordRecoveryDecision("accepted", "transient_retry");
+      return retry({ lastRetryFailoverReason: failureReason });
     }
     if (outputLimitFailure) {
       sessionPromptState.markOwnedTranscriptRetry();
